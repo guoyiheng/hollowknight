@@ -1,7 +1,8 @@
 import fs from 'fs'
 import fetch from 'node-fetch'
 import * as cheerio from 'cheerio'
-import { docNames } from './getDocs.js'
+
+const docNames = fs.readFileSync('./2docName.txt', 'utf8').split('\n')
 
 const sciurl = 'https://search.crossref.org/?from_ui=&q='
 
@@ -29,6 +30,8 @@ async function getHtml(url) {
     method: 'GET',
   })
   const body = await response.text()
+  console.log('body', body)
+
   return body
 }
 
@@ -38,6 +41,8 @@ async function getHtml(url) {
 // main function
 async function getDoi(name) {
   const html = await getHtml(`${sciurl}${encodeURIComponent(name)}`)
+  console.log('html', html)
+
   const $ = cheerio.load(html)
   const links = $('.item-links-outer > .item-links').text()
   const titles = $('.item-data > .lead').text()
@@ -60,19 +65,27 @@ function sleep(time) {
 }
 
 // get dois
-let doiArray = []
+let doiRIght = []
+let doiWrong = []
 for (let index = 0; index < docNames.length; index++) {
   const element = docNames[index]
   console.log('===start===', index, element)
   try {
     const { doi, title } = await getDoi(element)
     const name = element.trim().toLowerCase()
-    console.log('---title---', title, name.includes(title.toLowerCase()))
-    doiArray.push({ index, name: element, doi, right: name.includes(title.toLowerCase()), title })
+    const right = name.includes(title.toLowerCase())
+    const data = { index, name: element, doi, right, title }
+    console.log('---data---', data)
+    if (right) {
+      doiRIght.push(data)
+    } else {
+      doiWrong.push(data)
+    }
   } catch (error) {
-    console.log('error element', element)
+    console.log('error doc name', element)
   }
   await sleep(3000)
   console.log('===end===')
-  fs.writeFileSync('./doi.json', JSON.stringify(doiArray))
+  fs.writeFileSync('./4doiRIght.json', JSON.stringify(doiRIght))
+  fs.writeFileSync('./4doiWrong.json', JSON.stringify(doiWrong))
 }

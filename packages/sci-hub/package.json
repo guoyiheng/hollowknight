@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "doi": "node getDoi/index.js",
     "link": "node getSciLink/sci-hub.js",

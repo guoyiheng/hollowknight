@@ -1,7 +1,7 @@
 import fs from 'fs'
 import fetch from 'node-fetch'
 import * as cheerio from 'cheerio'
-import { docs } from '../docs.js'
+const docs = JSON.parse(fs.readFileSync('./4doiRight.json', 'utf8'))
 
 const sciurl = 'https://sci-hub.se/'
 
@@ -64,7 +64,7 @@ function sleep(time) {
   return new Promise(resolve => setTimeout(resolve, time))
 }
 
-// get docs
+// get links of docs
 let doiArray = []
 for (let index = 0; index < docs.length; index++) {
   const doc = docs[index]
@@ -81,5 +81,5 @@ for (let index = 0; index < docs.length; index++) {
   }
   await sleep(3000)
   console.log('===end===', index)
-  fs.writeFileSync('./links.json', JSON.stringify(doiArray))
+  fs.writeFileSync('./6links.json', JSON.stringify(doiArray))
 }
