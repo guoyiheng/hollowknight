@@ -1,0 +1,15 @@
+{
+  "name": "sci-hub",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "doi": "node getDoi/index.js",
+    "link": "node getSciLink/sci-hub.js",
+    "dl": "node dl/index.js",
+    "should": "node docs.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
